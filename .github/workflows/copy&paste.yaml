@@ -1,0 +1,41 @@
+name: Create, Copy, and Upload Artifact
+
+on:
+  push:
+    branches:
+      - master # Triggers the workflow on push to the main branch
+  workflow_dispatch:
+    # Allows manual triggering of the workflow from the GitHub UI
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4 # Checks out your repository content
+
+      - name: Create folder1 and the text file
+        run: |
+          mkdir -p folder1 # Creates the directory folder1
+          echo "Hi DevOps" > folder1/devops.txt # Creates the file with the specified text
+
+      - name: Create folder2
+        run: |
+          mkdir -p folder2 # Creates the directory folder2
+
+      - name: Copy file to folder2
+        run: |
+          cp folder1/devops.txt folder2/devops.txt # Copies the file from folder1 to folder2
+
+      - name: Verify files are in place
+        run: |
+          ls -R # Lists all files and folders recursively to confirm structure
+          cat folder2/devops.txt # Prints the content of the copied file
+
+      - name: Upload files in folder2 as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-devops-artifact # Name of the artifact
+          path: folder2/ # Path to the directory to upload
+          retention-days: 5 # Optional: sets the retention period for the artifact
